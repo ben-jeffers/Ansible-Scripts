@@ -1,0 +1,9 @@
+---
+- hosts: beg_win_clients, mil_win_clients, scada_win_clients, sub_win_clients, wp_scada_win_clients, mil_dmz_win_clients, beg_dmz_win_clients
+  tasks:
+    - name: Uninstall Sysmon
+      win_command: C:\Windows\Sysmon64.exe -u
+    - name: Delete Old Sysmon EXE
+      win_file:
+        path: C:\Windows\Sysmon64.exe
+        state: absent

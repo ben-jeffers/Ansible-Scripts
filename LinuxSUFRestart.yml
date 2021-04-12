@@ -1,0 +1,8 @@
+---
+- hosts: test
+  tasks: 
+    - name: Restart SUF
+      expect:
+        command: sudo /opt/splunkforwarder/bin/splunk restart
+        responses:
+          (?i)password: "Admin1Admin1"

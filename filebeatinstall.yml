@@ -1,0 +1,62 @@
+---
+- hosts: test
+  tasks:
+    - name: Copy DEB File
+      copy:
+        src: filebeat.deb
+        dest: /tmp
+
+    - name: Copy YML File
+      copy:
+        src: filebeat.yml
+        dest: /tmp
+      
+    - name: Install Filebeat DEB Package
+      expect:
+        command: sudo dpkg -i /tmp/filebeat.deb
+        responses:
+          (?i)password: "Admin1Admin1"
+
+    - name: Delete to /etc/filebeat
+      expect:
+        command: sudo rm -rf /etc/filebeat/filebeat.yml
+        responses:
+          (?i)password: "Admin1Admin1"
+
+    - name: Copy YML File to /etc/filebeat
+      expect:
+        command: sudo mv /tmp/filebeat.yml /etc/filebeat
+        responses:
+          (?i)password: "Admin1Admin1"
+
+    - name: Chown to root
+      expect:
+        command: sudo chown root /etc/filebeat/filebeat.yml
+        responses:
+          (?i)password: "Admin1Admin1"
+
+    - name: Chmod
+      expect:
+        command: sudo chmod go-w /etc/filebeat/filebeat.yml
+        responses:
+          (?i)password: "Admin1Admin1"
+
+    - name: Enable System Module
+      expect:
+        command: sudo filebeat modules enable system
+        responses:
+          (?i)password: "Admin1Admin1"
+          
+    - name: Enable Filebeat Service
+      expect:
+        command: sudo systemctl enable filebeat
+        responses:
+          (?i)password: "Admin1Admin1"      
+ 
+    - name: Start Filebeat Service
+      expect:
+        command: sudo systemctl start filebeat
+        responses:
+          (?i)password: "Admin1Admin1"
+          
+          

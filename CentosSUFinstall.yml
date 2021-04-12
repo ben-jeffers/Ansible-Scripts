@@ -1,0 +1,16 @@
+---
+- hosts: test
+  tasks:
+    - name: Copy file
+      copy:
+        src: SUFLinuxRPM.rpm
+        dest: /tmp
+
+    - name: Install package.
+      yum:
+        name: /tmp/SUFLinuxRPM.rpm
+        state: present
+      become: yes          
+          
+          
+          
