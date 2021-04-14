@@ -1,0 +1,10 @@
+---
+- hosts: ubuntu, centos, debian
+  remote_user: bt13
+  tasks:
+
+    - name: Restart Splunk service
+      command: /opt/splunkforwarder/bin/splunk restart
+      become: yes
+      ignore_errors: yes
+

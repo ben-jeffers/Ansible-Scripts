@@ -1,0 +1,26 @@
+---
+- hosts: beg_win_clients, mil_win_clients, scada_win_clients, sub_win_clients, wp_scada_win_clients, mil_dmz_win_clients, beg_dmz_win_clients
+  tasks:
+    - name: Copy WinLogBeat Folder to System
+      win_copy:
+        src: winlogbeat-7.12.0-windows-x86.zip
+        dest: C:\Program Files (x86)\
+    - name: Unzip Files
+      win_unzip:
+        src: C:\Program Files (x86)\winlogbeat-7.12.0-windows-x86.zip
+        dest: C:\Program Files (x86)\winlogbeat
+    - name: Delete ZIP file
+      win_file:
+        path: C:\Program Files (x86)\winlogbeat-7.12.0-windows-x86.zip
+        state: absent
+    - name: Delete Uninstall Script
+      win_file:
+        path: C:\Program Files (x86)\winlogbeat\winlogbeat-7.12.0-windows-x86\uninstall-service-winlogbeat.ps1
+        state: absent
+    - name: Install WinLogBeat
+      win_shell: .'C:\Program Files (x86)\winlogbeat\winlogbeat-7.12.0-windows-x86\install-service-winlogbeat.ps1'
+    - name: Start winlogbeat
+      win_service:
+        name: winlogbeat
+        start_mode: auto
+        state: started

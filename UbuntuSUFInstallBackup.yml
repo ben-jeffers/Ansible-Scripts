@@ -1,0 +1,61 @@
+---
+- hosts: ubuntu
+  remote_user: bt13
+  tasks:
+    - name: Copy file
+      copy:
+        src: SUFLinuxDEB.deb
+        dest: /tmp
+      ignore_errors: yes
+
+    - name: Install SUF DEB Package
+      expect:
+        command: sudo dpkg -i /tmp/SUFLinuxDEB.deb
+        responses:
+          (?i)password: "ComeAndHaveAGo"
+      ignore_errors: yes
+          
+    - name: Start Splunk
+      expect:
+        command: sudo /opt/splunkforwarder/bin/splunk start --accept-license
+        responses:
+          (?i)password for bt13: "ComeAndHaveAGo"
+          (?i)administrator username: "splunk"
+          (?i)a new password: joltgrabdefrostrobin
+          (?i)confirm new password: joltgrabdefrostrobin
+      ignore_errors: yes
+              
+    - name: Enable init script
+      expect:
+        command: sudo /opt/splunkforwarder/bin/splunk enable boot-start
+        responses:
+          (?i)password for bt13: "ComeAndHaveAGo"
+      ignore_errors: yes
+
+    - name: Set Indexer
+      expect:
+        command: sudo /opt/splunkforwarder/bin/splunk add forward-server 10.13.1.60:9997
+        responses:
+          (?i)password for bt13: "ComeAndHaveAGo"
+          (?i)Splunk username: "splunk"
+          (?i)Password: "joltgrabdefrostrobin"
+      ignore_errors: yes
+
+    - name: Set Deploy Poll
+      expect:
+        command: sudo /opt/splunkforwarder/bin/splunk set deploy-poll 10.13.1.60:8089
+        responses:
+          (?i)password for bt13: "ComeAndHaveAGo"
+          (?i)Splunk username: "splunk"
+          (?i)Password: "joltgrabdefrostrobin"
+      ignore_errors: yes
+          
+    - name: Clearing Files
+      expect:
+        command: sudo rm -rf /tmp/SUFLinuxDEB.deb
+        responses:
+          (?i)password: "ComeAndHaveAGo"
+      ignore_errors: yes          
+          
+          
+          

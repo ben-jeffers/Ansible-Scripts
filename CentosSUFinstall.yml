@@ -1,0 +1,46 @@
+---
+- hosts: centos
+  remote_user: bt13
+  tasks:
+    - name: Copy SUF RPM
+      copy:
+        src: SUFLinuxRPM.rpm
+        dest: /tmp
+
+    - name: Install RPM.
+      yum:
+        name: /tmp/SUFLinuxRPM.rpm
+        state: present
+      become: yes
+
+    - name: Copy user-seed.conf
+      copy:
+        src: user-seed.conf
+        dest: /opt/splunkforwarder/etc/system/local
+
+    - name: Copy deploymentclient.conf
+      copy:
+        src: deploymentclient.conf
+        dest: /opt/splunkforwarder/etc/system/local
+ 
+    - name: Copy outputs.conf
+      copy:
+        src: outputs.conf
+        dest: /opt/splunkforwarder/etc/system/local
+
+    - name: Start Splunk
+      command: /opt/splunkforwarder/bin/splunk start --accept-license
+      ignore_errors: yes
+      become: yes
+ 
+    - name: Enable init script
+      command: /opt/splunkforwarder/bin/splunk enable boot-start
+      ignore_errors: yes
+      become: yes
+
+    - name: Clearing Files
+      command: rm -rf /tmp/SUFLinuxRPM.rpm        
+      become: yes
+      ignore_errors: yes          
+          
+          

@@ -1,0 +1,15 @@
+---
+- hosts: beg_win_clients, mil_win_clients, scada_win_clients, sub_win_clients, wp_scada_win_clients, mil_dmz_win_clients, beg_dmz_win_clients
+  remote_user: administrator
+  tasks:
+    - name: Stopping SUF
+      win_service:
+        name: SplunkForwarder
+        state: stopped
+    - name: Starting SUF
+      win_service:
+        name: SplunkForwarder
+        state: started
+
+
+

@@ -1,0 +1,55 @@
+---
+- hosts: debian
+  remote_user: bt13
+  tasks:
+    - name: Copy SUF DEB
+      copy:
+        src: SUFLinuxDEB.deb
+        dest: /tmp
+
+    - name: Install deb
+      command: dpkg -i /tmp/SUFLinuxDEB.deb
+      become: yes
+      ignore_errors: yes
+
+    - name: chmod
+      command: chmod 777 /opt/splunkforwarder
+      become: yes
+      ignore_errors: yes
+
+    - name: chown
+      command: chown -R bt13 /opt/splunkforwarder
+      become: yes
+      ignore_errors: yes
+
+    - name: Copy user-seed.conf
+      copy:
+        src: user-seed.conf
+        dest: /opt/splunkforwarder/etc/system/local
+
+    - name: Copy deploymentclient.conf
+      copy:
+        src: deploymentclient.conf
+        dest: /opt/splunkforwarder/etc/system/local
+ 
+    - name: Copy outputs.conf
+      copy:
+        src: outputs.conf
+        dest: /opt/splunkforwarder/etc/system/local
+
+    - name: Start Splunk
+      command: /opt/splunkforwarder/bin/splunk start --accept-license
+      ignore_errors: yes
+      become: yes
+ 
+    - name: Enable init script
+      command: /opt/splunkforwarder/bin/splunk enable boot-start
+      ignore_errors: yes
+      become: yes
+
+    - name: Clearing Files
+      command: rm -rf /tmp/SUFLinuxRPM.rpm        
+      become: yes
+      ignore_errors: yes          
+          
+          

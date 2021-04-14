@@ -1,0 +1,52 @@
+---
+- hosts: ubuntu
+  remote_user: bt13
+  tasks:
+    - name: Copy file
+      copy:
+        src: SUFLinuxDEB.deb
+        dest: /tmp
+      
+    - name: Install SUF DEB Package
+        apt:
+          deb: /tmp/SUFLinuxDEB.deb
+        become: yes
+          
+    - name: Start Splunk
+      expect:
+        command: /opt/splunkforwarder/bin/splunk start --accept-license
+        become: yes
+        responses:
+          (?i)password for administrato: "Admin1Admin1"
+          (?i)Splunk username: "splunk"
+          (?i)Password: "joltgrabdefrostrobin"
+              
+    - name: Enable init script
+        command: /opt/splunkforwarder/bin/splunk enable boot-start
+        become: yes
+
+    - name: Set Indexer
+        command: /opt/splunkforwarder/bin/splunk add forward-server 10.13.1.60:9997
+        responses:
+          (?i)password for administrato: "Admin1Admin1"
+          (?i)Splunk username: "splunk"
+          (?i)Password: "joltgrabdefrostrobin"
+        become:yes 
+
+    - name: Set Deploy Poll
+      expect:
+        command: /opt/splunkforwarder/bin/splunk set deploy-poll 10.13.1.60:8089
+        responses:
+          (?i)password for administrato: "Admin1Admin1"
+          (?i)Splunk username: "splunk"
+          (?i)Password: "joltgrabdefrostrobin"
+          becone: yes
+
+    - name: Clearing Files
+      expect:
+        command: rm -rf /tmp/SUFLinuxDEB.deb
+        become: yes
+          
+          
+          
+          

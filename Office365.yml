@@ -1,0 +1,24 @@
+---
+- hosts: beg_win_clients, mil_win_clients, scada_win_clients, sub_win_clients, wp_scada_win_clients, mil_dmz_win_clients, beg_dmz_win_clients
+  remote_user: administrator
+  tasks:
+    - name: Delete Script
+      win_file:
+        path: C:\Temp\WindowsDefenderATPLocalOnboardingScript.cmd
+        state: absent
+    - name: Copy O365 Script to system
+      win_copy:
+        src: WindowsDefenderATPLocalOnboardingScript.cmd
+        dest: C:\Temp     
+    - name: Install O365 on Windows Host
+      win_shell: 'cmd.exe C:\Temp\WindowsDefenderATPLocalOnboardingScript.cmd'
+      become_method: runas
+      become: yes
+      become_user: administrator
+      vars:
+        ansible_become_password: Admin1Admin1
+    - name: Delete Script
+      win_file:
+        path: C:\Temp\WindowsDefenderATPLocalOnboardingScript.cmd
+        state: absent
+

@@ -1,0 +1,17 @@
+---
+- hosts: mac, freebsd
+  remote_user: bt13
+  tasks:
+    - name: Copy DMG
+      copy:
+        src: SUF.dmg
+        dest: /tmp
+      ignore_errors: yes          
+
+    - name: Copy TXZ
+      copy:
+        src: SUF.txz
+        dest: /tmp
+      ignore_errors: yes          
+          
+          
